@@ -1,19 +1,14 @@
 #include "push_key.h"
 #include "show_bmp.h"
 
-int num;
-
-int jugde(struct coordinate *xyp)
-{	
-	if(xyp->y < 47 || xyp->y >= 327)
-			return -1;
-	int i;
-	for(i=0; i<12; i++)
-	{	
-		if(xyp->x >= 10+65*i && xyp->x <= 10+65*(i+1))
-			break;
-	}
-	return i;
+void *routine(void *arg)
+{
+		pthread_detach(pthread_self());
+		char buf[50];
+		bzero(buf, sizeof(buf));
+				
+		sprintf(buf, "./madplay ../snd/d%d.mp3 -a -20 &", (int)arg);
+		system(buf);
 }
 
 int main(int argc, char **argv)
@@ -54,44 +49,37 @@ int main(int argc, char **argv)
 
 	struct coordinate *xyp = calloc(1, sizeof(struct coordinate));
 
-	int prev = 0;
+	pthread_t tid;
+
+	int prev = 10;
 	int last = 0;
+	int sndflag = 0;
 	while(1)
 	{
 		int death = push_key(ts, xyp);
-
-		
-		if(num == -1)
+		if(xyp->y < 47 || xyp->y >= 327)
 			continue;
 		last = (xyp->x-20)/65*65 + 10;
 		printf("last: %d\n", last);
 
 		if(xyp->press == 0 || prev != last)
 		{
-			//system("killall madplay");
-			//last = (xyp->x-20)/65*65 + 10;
-			//printf("last: %d\n", last);
+			system("killall madplay");
 			display_bmp(fbmemy, &vinfo, imgdata3, &imgfo3, prev, 47);
 			printf("leave\n");
-			//char buf[50];
-			//bzero(buf, sizeof(buf));
-			//num = jugde(xyp);
-			//sprintf(buf, "./madplay ../snd/d%d.mp3 -a -10 &", num+1);
-			//system(buf);
-			
+			sndflag = 1;
 		}
 
-		if(xyp->press == 1)
+		if(xyp->press == 1 && sndflag == 1)
 		{
 			printf("on\n");
 			prev = (xyp->x-20)/65*65 + 10;
 			display_bmp(fbmemy, &vinfo, imgdata4, &imgfo4, prev, 47);
 			printf("prev: %d\n", prev);
-			//prev_num = num;
-			//printf("prev num: %d\n", prev_num);
+			pthread_create(&tid, NULL, routine, (void *)(xyp->x/65+1));
+			sndflag = 0;
 		}	
-		
 	}
 
-	return 0;
+	pthread_exit(NULL);
 }
