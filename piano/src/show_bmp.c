@@ -100,31 +100,4 @@ void display_bmp(char *fbmemy, struct fb_var_screeninfo *pvinfo, char *imgdata,
 
 
 
-int main(int argc, char **argv)
-{
-	struct fb_var_screeninfo vinfo;
-	char *fbmemy = init_lcd(&vinfo);
 
-	struct image_info imgfo1;
-	char *imgdata1 = load_bmp("../pic/background.bmp", &imgfo1);
-
-	struct image_info imgfo2;
-	char *imgdata2 = load_bmp("../pic/bar.bmp", &imgfo2);
-	
-	struct image_info imgfo3;
-	char *imgdata3 = load_bmp("../pic/key_on.bmp", &imgfo3);
-	
-	struct image_info imgfo4;
-	char *imgdata4 = load_bmp("../pic/logo.bmp", &imgfo4);
-
-	display_bmp(fbmemy, &vinfo, imgdata1, &imgfo1, 0, 0);
-	display_bmp(fbmemy, &vinfo, imgdata2, &imgfo2, 0, 0);
-	int i;
-	for(i=0; i<12; i++)
-	{
-		display_bmp(fbmemy, &vinfo, imgdata3, &imgfo3, 10+i*65, 47);
-	}
-	display_bmp(fbmemy, &vinfo, imgdata4, &imgfo4, 229, 327);
-
-	return 0;
-}

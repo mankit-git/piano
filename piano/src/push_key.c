@@ -1,13 +1,9 @@
-#include "../inc/show.bmp.h"
+#include "push_key.h"
+#include "show_bmp.h"
 
-void push_key()
+int push_key( int ts, struct coordinate *xyp)
 {
-	int ts = open("/dev/input/event0", O_RDONLY);
-	if(ts == -1)
-	{
-		perror("open() failed");
-		exit(0);
-	}
+	
 	struct input_event buf;
 	bzero(&buf, sizeof(buf));
 
@@ -16,12 +12,30 @@ void push_key()
 		read(ts, &buf, sizeof(buf));
 
 		if(buf.type == EV_ABS)
-		{
-			if(buf.code == ABS_X && buf.value >=10 && buf.value <= 75)
+		{	
+			if(buf.code == ABS_X)
 			{
-				printf("(%d, ", buf.value);
+				xyp->x = buf.value;
+				printf("x: %d\n", xyp->x);
+				//a = (buf.value-20)/65 * 65 + 10;
 			}
-			if()
+			if(buf.code == ABS_Y)
+			{
+				xyp->y = buf.value;
+				printf("y: %d\n", xyp->y);
+			}
+			
 		}
+
+		if(buf.type == EV_KEY)
+		{
+			if(buf.code == BTN_TOUCH)
+			{
+				xyp->press = buf.value;
+				break;
+			}		
+		}
+		
 	}
+
 }

@@ -19,6 +19,15 @@
 #define GREEN 1
 #define BLUE  0
 
+#define DEATH -1
+
+struct coordinate
+{
+	int x;
+	int y;
+	int press;
+};
+
 struct image_info
 {
 	int height;
@@ -51,5 +60,11 @@ struct info
 	int32_t clrImportant;
 }__attribute__((packed));
 
+char *init_lcd(struct fb_var_screeninfo *pvinfo);
+
+char *load_bmp(char *bmpfile, struct image_info *pimgfo);
+
+void display_bmp(char *fbmemy, struct fb_var_screeninfo *pvinfo, char *imgdata,
+		struct image_info *pimgfo, int xoffset, int yoffset);
 
 #endif 
