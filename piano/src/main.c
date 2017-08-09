@@ -1,19 +1,20 @@
 #include "push_key.h"
 #include "show_bmp.h"
 
+int num;
+
 int jugde(struct coordinate *xyp)
 {	
+	if(xyp->y < 47 || xyp->y >= 327)
+			return -1;
 	int i;
 	for(i=0; i<12; i++)
 	{	
-		if(xyp->y < 47 && xyp->y >= 327)
-			return -1;
 		if(xyp->x >= 10+65*i && xyp->x <= 10+65*(i+1))
 			break;
 	}
 	return i;
 }
-
 
 int main(int argc, char **argv)
 {
@@ -52,32 +53,45 @@ int main(int argc, char **argv)
 	display_bmp(fbmemy, &vinfo, imgdata5, &imgfo5, 229, 327);
 
 	struct coordinate *xyp = calloc(1, sizeof(struct coordinate));
-	 
+
+	int prev = 0;
+	int last = 0;
 	while(1)
 	{
 		int death = push_key(ts, xyp);
 
-		int num = jugde(xyp);
+		
 		if(num == -1)
-			return DEATH;
+			continue;
+		last = (xyp->x-20)/65*65 + 10;
+		printf("last: %d\n", last);
+
+		if(xyp->press == 0 || prev != last)
+		{
+			//system("killall madplay");
+			//last = (xyp->x-20)/65*65 + 10;
+			//printf("last: %d\n", last);
+			display_bmp(fbmemy, &vinfo, imgdata3, &imgfo3, prev, 47);
+			printf("leave\n");
+			//char buf[50];
+			//bzero(buf, sizeof(buf));
+			//num = jugde(xyp);
+			//sprintf(buf, "./madplay ../snd/d%d.mp3 -a -10 &", num+1);
+			//system(buf);
+			
+		}
+
 		if(xyp->press == 1)
 		{
 			printf("on\n");
-			display_bmp(fbmemy, &vinfo, imgdata4, &imgfo4, 10+num*65, 47);
-		}
-		if(xyp->press == 0)
-		{
-			system("killall madplay");
-			display_bmp(fbmemy, &vinfo, imgdata3, &imgfo3, 10+num*65, 47);
-			printf("leave\n");
-			char buf[50];
-			bzero(buf, sizeof(buf));
-			sprintf(buf, "./madplay ../snd/d%d.mp3 -a -15 &", num+1);
-			system(buf);
-		}
+			prev = (xyp->x-20)/65*65 + 10;
+			display_bmp(fbmemy, &vinfo, imgdata4, &imgfo4, prev, 47);
+			printf("prev: %d\n", prev);
+			//prev_num = num;
+			//printf("prev num: %d\n", prev_num);
+		}	
+		
 	}
-
-
 
 	return 0;
 }
