@@ -1,12 +1,6 @@
 #include "push_key.h"
 #include "show_bmp.h"
 
-void cleanup(int sig)
-{
-	semctl(semid, 0, IPC_RMID);
-	exit(0);
-}
-
 int push_key( int ts, struct coordinate *xyp)
 {
 	struct input_event buf;
@@ -33,7 +27,7 @@ int push_key( int ts, struct coordinate *xyp)
 				printf("y: %d\n", xyp->y);
 			}
 			if(xyp->y <= 47 && xyp->x >= 740)
-				return DEATH
+				return EXIT;
 		}
 
 		if(flag1 ==1 && flag2 == 1)

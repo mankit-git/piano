@@ -7,7 +7,7 @@ void *routine(void *arg)
 		char buf[50];
 		bzero(buf, sizeof(buf));
 				
-		sprintf(buf, "./madplay ../snd/d%d.mp3 -a -20 &", (int)arg);
+		sprintf(buf, "./madplay ../snd/d%d.mp3 -a 3 &", (int)arg);
 		system(buf);
 }
 
@@ -56,9 +56,12 @@ int main(int argc, char **argv)
 	int sndflag = 0;
 	while(1)
 	{
-		int death = push_key(ts, xyp);
+		if(push_key(ts, xyp) == EXIT)
+			break;
+
 		if(xyp->y < 47 || xyp->y >= 327)
 			continue;
+
 		last = (xyp->x-20)/65*65 + 10;
 		printf("last: %d\n", last);
 

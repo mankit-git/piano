@@ -14,12 +14,15 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+#include <stdbool.h>
+#include <sys/sem.h>
+#include <signal.h>
 
 #define RED   2
 #define GREEN 1
 #define BLUE  0
 
-#define DEATH -1
+#define EXIT -1
 
 struct coordinate
 {
